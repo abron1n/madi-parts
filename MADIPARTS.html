@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MADI Parts</title>
+<style>
+  /* ========== THEME VARIABLES ========== */
+  :root {
+    /* Светлая тема (по умолчанию) — красивая светло-голубая */
+    --accent: #2f80ed;
+    --accent-2: #1976d2;
+    --muted: #6b7785;
+    --bg-start: #e9f1ff;
+    --bg-end: #f7fbff;
+    --glass-bg: rgba(255,255,255,0.36);
+    --glass-border: rgba(255,255,255,0.5);
+    --card-bg: rgba(255,255,255,0.42);
+    --text-main: #0f2330;
+    --text-muted: #52606a;
+    --shadow-soft: 0 12px 36px rgba(6,18,37,0.08);
+    --radius-xl: 22px;
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --glass-blur: 14px;
+  }
+
+  /* Тёмная тема — тёмно-синяя */
+  .dark-mode {
+    --accent: #5aa8ff;
+    --accent-2: #2f80ed;
+    --muted: #9aa6b2;
+    --bg-start: #071021;
+    --bg-end: #071826;
+    --glass-bg: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.1);
+    --card-bg: rgba(255,255,255,0.04);
+    --text-main: #dbeafc;
+    --text-muted: #99a8b6;
+    --shadow-soft: 0 14px 44px rgba(2,6,12,0.65);
+    --glass-blur: 20px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    color: var(--text-main);
+    padding: 28px;
+    transition: background 0.6s ease, color 0.6s ease;
+  }
+
+  .wrap{
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: all .38s ease;
+  }
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;}
+  .brand-block {display:flex;gap:14px;align-items:center;}
+  .logo {
+    width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:white;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 8px 26px rgba(47,128,237,0.22);font-size:18px;
+  }
+  header h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-0.01em;}
+  header .sub {font-size:13px;color:var(--text-muted);}
+
+  .theme-btn{
+    background:rgba(255,255,255,0.35);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.4);
+    color:var(--text-main);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 28px rgba(0,0,0,0.15);
+    transition:all .28s ease;
+  }
+  .theme-btn:hover{transform:scale(1.1) rotate(8deg);}
+
+  .main {display:grid;grid-template-columns:320px 1fr;gap:22px;}
+
+  .panel{
+    padding:20px;border-radius:var(--radius-lg);
+    background:linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));
+    border:1px solid var(--glass-border);backdrop-filter:blur(calc(var(--glass-blur)-4px));
+    box-shadow:0 6px 20px rgba(6,18,37,0.06);
+  }
+  .group{margin-bottom:14px}
+  label{display:block;font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;}
+
+  select,input{
+    width:100%;padding:12px 14px;font-size:14px;border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.06);
+    color:var(--text-main);outline:none;transition:all .22s ease;
+  }
+  select:disabled{opacity:0.6;cursor:not-allowed}
+  select:focus,input:focus{transform:translateY(-2px);box-shadow:0 8px 28px rgba(47,128,237,0.14);border-color:var(--accent);}
+  select.active-filter{box-shadow:0 0 0 4px rgba(47,128,237,0.22);transform:scale(1.02);transition:.18s ease;}
+
+  .results{padding:16px;}
+  .stats{padding:12px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);color:var(--text-muted);font-size:14px;margin-bottom:14px;}
+  .quick-categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:12px 0 16px}
+  .quick-btn{padding:10px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);font-weight:600;font-size:13px;text-align:center;cursor:pointer;transition:all .22s ease;}
+  .quick-btn:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 12px 32px rgba(47,128,237,0.12);}
+
+  .error{background:rgba(255,58,92,0.08);color:#ff506b;padding:12px;border-radius:10px;font-weight:700;}
+  .loading{padding:18px;text-align:center;color:var(--text-muted)}
+  .small{font-size:13px;color:var(--text-muted)}
+
+  .skeleton-card{height:240px;border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));border:1px solid var(--glass-border);backdrop-filter:blur(12px);animation:skeletonPulse 1.4s infinite ease-in-out;}
+  @keyframes skeletonPulse{0%,100%{opacity:.8}50%{opacity:.4}}
+
+  .parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+  .card{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:16px;background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(calc(var(--glass-blur)-6px));box-shadow:0 6px 18px rgba(6,18,37,0.06);transition:transform .28s cubic-bezier(.2,.9,.3,1),box-shadow .28s;}
+  .card:hover{transform:rotateX(5deg) rotateY(8deg) translateY(-10px);box-shadow:0 24px 56px rgba(6,18,37,0.22);}
+  .thumb{height:140px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .thumb img{width:100%;height:100%;object-fit:contain;}
+  .brand{font-weight:800;font-size:15px;color:var(--text-main)}
+  .article{font-size:12px;color:var(--text-muted)}
+  .name{font-size:14px;color:var(--text-main);min-height:40px}
+  .price{font-size:16px;font-weight:800;color:#0b8457}
+  .card .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .btn{padding:11px;border-radius:12px;border:0;cursor:pointer;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;transition:all .22s;}
+  .btn:hover{transform:translateY(-4px);filter:brightness(1.08)}
+
+  footer{padding:12px 0 0;color:var(--text-muted);font-size:13px}
+
+  #aiChatWidget{position:fixed;bottom:22px;right:22px;z-index:9999;}
+  #chatMinimized{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:14px 20px;border-radius:50px;cursor:pointer;box-shadow:0 14px 40px rgba(47,128,237,0.26);font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px;transition:all .3s;}
+  #chatMinimized:hover{transform:scale(1.06)}
+  #chatFull{width:420px;height:620px;background:rgba(255,255,255,0.18);border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,0.3);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.28);backdrop-filter:blur(30px) saturate(180%);}
+  #chatFull .chatHeader{padding:16px 18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:15px;}
+  #chatMessages{flex:1;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+  #chatMessages .bot{align-self:flex-start;background:rgba(255,255,255,0.40);backdrop-filter:blur(14px);color:var(--text-main);padding:12px 14px;border-radius:16px;max-width:80%;border:1px solid rgba(255,255,255,0.35);box-shadow:0 6px 18px rgba(6,18,37,0.06);}
+  #chatMessages .user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:12px 14px;border-radius:16px;max-width:80%;box-shadow:0 6px 18px rgba(6,18,37,0.12);}
+  #chatFull .inputWrap{padding:14px;display:flex;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));}
+  #chatInput{flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);outline:none;background:rgba(255,255,255,0.04);color:var(--text-main);}
+  #chatSendBtn{padding:10px 16px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;font-weight:800;cursor:pointer;}
+
+  #cartButton{position:fixed;bottom:92px;right:22px;z-index:99999;background:linear-gradient(120deg,var(--accent),var(--accent-2));width:56px;height:56px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;cursor:pointer;box-shadow:0 14px 36px rgba(47,128,237,0.3);transition:all .28s;}
+  #cartButton:hover{transform:scale(1.06);}
+  #cartPanel{position:fixed;top:0;right:-420px;width:420px;height:100%;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border-left:1px solid rgba(255,255,255,0.25);box-shadow:-10px 0 40px rgba(0,0,0,0.25);transition:right .45s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;z-index:99998;}
+  #cartPanel.open{right:0;}
+  .cart-header{padding:20px;font-size:18px;font-weight:800;display:flex;justify-content:space-between;}
+  .cart-header button{background:none;border:0;font-size:28px;cursor:pointer;color:var(--text-main);}
+  #cartItems{flex:1;overflow-y:auto;padding:16px;}
+  .cart-item{display:flex;justify-content:space-between;margin-bottom:12px;padding:12px;background:rgba(255,255,255,0.24);border-radius:14px;backdrop-filter:blur(16px);}
+  .cart-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.25);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);padding:14px 24px;background:rgba(255,255,255,0.24);border:1px solid rgba(255,255,255,0.35);border-radius:16px;backdrop-filter:blur(22px);box-shadow:0 20px 40px rgba(0,0,0,0.25);color:var(--text-main);font-weight:700;opacity:0;transition:all .45s;z-index:99999;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:980px){
+    .main{grid-template-columns:1fr}.panel{order:2}.results{order:1}
+    #chatFull,#cartPanel{width:calc(100%-24px);left:12px;right:auto;height:540px}
+    #cartButton{bottom:92px;right:12px}
+  }
+  .muted{color:var(--text-muted)}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .appear{animation:fadeIn .4s ease both}
+  /* ──────── ИСПРАВЛЕНИЕ ВЫПАДАЮЩИХ СПИСКОВ ──────── */
+select {
+  color: var(--text-main) !important;
+  background-color: rgba(255,255,255,0.09) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23dbeafc' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Тёмная тема — светлый текст и тёмный фон у option */
+.dark-mode select,
+.dark-mode select option {
+  color: #e0eafc !important;
+  background-color: #0a1428 !important;
+}
+
+/* Светлая тема — тёмный текст и белый фон у option */
+select option {
+  color: #0f2330 !important;
+  background-color: #ffffff !important;
+}
+
+/* При наведении на вариант — лёгкая подсветка */
+select option:hover,
+.dark-mode select option:hover {
+  background-color: var(--accent) !important;
+  color: white !important;
+}
+
+/* Стрелка в светлой теме */
+:not(.dark-mode) select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232f80ed' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
+}
+/* ──────── ПЛАВНАЯ АНИМАЦИЯ ВЫСОТЫ SELECT ──────── */
+select {
+  overflow: hidden;                     /* Важно! Скрываем лишнее */
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);  /* Плавная высота + другие свойства */
+  max-height: 56px;                     /* Высота закрытого состояния */
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/* Когда в select больше 1 опции — плавно увеличиваем высоту */
+select:has(option:nth-child(2)) {
+  max-height: 400px;                    /* Достаточно для длинных списков */
+}
+
+/* Опции появляются с лёгкой задержкой (stagger) */
+select option {
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: fadeInDown 0.4s ease forwards;
+}
+
+/* Задержка для каждой опции */
+select option:nth-child(1) { animation-delay: 0.00s; }
+select option:nth-child(2) { animation-delay: 0.03s; }
+select option:nth-child(3) { animation-delay: 0.06s; }
+select option:nth-child(4) { animation-delay: 0.09s; }
+select option:nth-child(5) { animation-delay: 0.12s; }
+select option:nth-child(6) { animation-delay: 0.15s; }
+select option:nth-child(7) { animation-delay: 0.18s; }
+select option:nth-child(8) { animation-delay: 0.21s; }
+select option:nth-child(9) { animation-delay: 0.24s; }
+select option:nth-child(10) { animation-delay: 0.27s; }
+/* Для остальных — общая задержка */
+select option:nth-child(n+11) { animation-delay: 0.30s; }
+
+@keyframes fadeInDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Дополнительно: лёгкая тень при фокусе */
+select:focus {
+  box-shadow: 0 0 0 4px rgba(227, 25, 55, 0.25);   /* Красный Tesla-акцент */
+}
+</style>
+</head>
+<body>
+
+<div class="wrap appear">
+  <header>
+    <div class="brand-block">
+      <div class="logo">🚘</div>
+      <div>
+        <h1>МАДИ Автозапчасти</h1>
+        <div class="sub">Каталог запчастей · Нейроэксперт </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <div class="sub muted" id="themeHint">Светлая тема</div>
+      <button id="themeToggle" class="theme-btn" title="Переключить тему">🌙</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <aside class="panel">
+      <div class="group"><label>Язык</label><select id="languageCode"><option value="ru">ru</option><option value="en">en</option></select></div>
+      <div class="group"><label>Регион</label><select id="regionCode"><option value="WWW">WWW</option><option value="RU">RU</option></select></div>
+      <div class="group"><label>Марка</label><select id="manufacturerSelect" disabled><option>Загрузка...</option></select></div>
+      <div class="group"><label>Модель</label><select id="modelSelect" disabled><option>Сначала выберите марку</option></select></div>
+      <div class="group"><label>Модификация</label><select id="modificationSelect" disabled><option>Сначала выберите модель</option></select></div>
+      <div class="group"><label>Категория</label><select id="categorySelect" disabled><option>Сначала выберите модификацию</option></select></div>
+      <div class="group"><label>Группа продуктов</label><select id="productSelect" disabled><option>Сначала выберите категорию</option></select></div>
+    </aside>
+
+    <section class="results">
+      <div id="stats" class="stats">Выберите марку.</div>
+      <div id="quickCategories"></div>
+      <div id="errorBox"></div>
+      <div id="content">
+        <div id="loading" class="loading" style="display:none">Загрузка...</div>
+        <div id="parts" class="parts"></div>
+      </div>
+      <footer class="muted"> </footer>
+    </section>
+  </div>
+</div>
+
+<!-- Чат с ИИ -->
+<div id="aiChatWidget">
+  <div id="chatMinimized" title="Открыть чат">ИИ-Эксперт</div>
+  <div id="chatFull" style="display:none;">
+    <div class="chatHeader">
+      <span>powered by Qwen</span>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button onclick="document.getElementById('chatFull').style.display='none';document.getElementById('chatMinimized').style.display='flex'" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">−</button>
+        <button onclick="document.getElementById('aiChatWidget').style.display='none'" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">×</button>
+      </div>
+    </div>
+    <div id="chatMessages"></div>
+    <div class="inputWrap">
+      <input id="chatInput" type="text" placeholder="Турбина гонит масло Octavia RS" onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button id="chatSendBtn" onclick="sendMessage()">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Корзина над чатом -->
+<div id="cartButton" title="Открыть корзину">🛒</div>
+<div id="cartPanel" aria-hidden="true">
+  <div class="cart-header">
+    <span>Корзина</span>
+    <button id="closeCart">×</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total" style="margin-bottom:10px"><b>Итого:</b> <span id="cartSum">0 шт.</span></div>
+    <button class="btn" style="width:100%">Оформить заказ</button>
+  </div>
+</div>
+
+<script>
+const CHAT_API = window.location.origin;
+const API_BASE = 'https://api.umapi.ru';
+const APP_KEY = '60314408-cb26-4b0b-8f26-4f48cc9a2130';
+
+// Добавляем функцию для получения APP_KEY с бэкенда
+async function initApp() {
+    try {
+        await loadManufacturers();
+    } catch (e) {
+        console.error("Init error:", e);
+    }
+}
+
+const cache = { manufacturers: null, models: {}, modifications: {}, categories: {}, products: {}, articles: {} };
+const state = { language: 'ru', region: 'WWW', manufacturerId: null, modelId: null, modificationPcId: null, categoryId: null, productId: null };
+const sessionId = "madi_user_" + Date.now() + "_" + Math.random().toString(36).substr(2,6);
+let cart = [];
+
+/* ТЕМА */
+(function(){
+  const stored = localStorage.getItem('madi_theme');
+  let isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if (isDark) {
+    document.documentElement.classList.add('dark-mode');
+    document.getElementById('themeToggle').textContent = '☀️';
+    document.getElementById('themeHint').textContent = 'Тёмная тема';
+  } else {
+    document.getElementById('themeToggle').textContent = '🌙';
+    document.getElementById('themeHint').textContent = 'Светлая тема';
+  }
+  document.getElementById('themeToggle').onclick = () => {
+    const currentDark = document.documentElement.classList.contains('dark-mode');
+    document.documentElement.classList.toggle('dark-mode', !currentDark);
+    localStorage.setItem('madi_theme', !currentDark ? 'dark' : 'light');
+    document.getElementById('themeToggle').textContent = !currentDark ? '☀️' : '🌙';
+    document.getElementById('themeHint').textContent = !currentDark ? 'Тёмная тема' : 'Светлая тема';
+  };
+})();
+
+/* ЧАТ */
+function toggleChat() {
+  document.getElementById('chatFull').style.display = 'flex';
+  document.getElementById('chatMinimized').style.display = 'none';
+  if (document.getElementById('chatMessages').children.length === 0) {
+    addMessage("Привет! Я — эксперт по ремонту и техническому обслуживанию автомобилей. Пиши любой вопрос!", "bot");
+  }
+}
+document.getElementById('chatMinimized').onclick = toggleChat;
+
+function addMessage(text, sender) {
+  const div = document.createElement('div');
+  div.className = sender;
+  div.textContent = text;
+  div.style.padding = '12px 14px';
+  div.style.borderRadius = '16px';
+  div.style.maxWidth = '86%';
+  div.style.wordWrap = 'break-word';
+  div.style.lineHeight = '1.45';
+  document.getElementById('chatMessages').appendChild(div);
+  div.scrollIntoView({behavior: "smooth", block: "end"});
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+  addMessage(message, "user");
+  input.value = '';
+  const typing = document.createElement('div');
+  typing.textContent = "Печатает...";
+  typing.style.color = '#999';
+  typing.style.fontStyle = 'italic';
+  typing.style.alignSelf = 'flex-start';
+  document.getElementById('chatMessages').appendChild(typing);
+  typing.scrollIntoView();
+  try {
+    const res = await fetch(CHAT_API, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({message, session_id: sessionId}) });
+    const data = await res.json();
+    typing.remove();
+    addMessage(data.reply || "Ошибка: " + (data.error || "сервер не ответил"), "bot");
+  } catch (e) {
+    typing.remove();
+    addMessage("Нет связи с сервером. Обратитесь к администратору.", "bot");
+  }
+}
+
+/* УТИЛИТЫ */
+function showError(msg){ document.getElementById('errorBox').innerHTML = `<div class="error">${escapeHtml(msg)}</div>`; }
+function clearError(){ document.getElementById('errorBox').innerHTML = ''; }
+function setStats(txt){ document.getElementById('stats').textContent = txt; }
+function showLoading(msg='Загрузка...'){ document.getElementById('loading').style.display='block'; document.getElementById('loading').textContent = msg; document.getElementById('parts').style.display='none'; }
+function hideLoading(){ document.getElementById('loading').style.display='none'; document.getElementById('parts').style.display='grid'; }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function checkedFetch(url){
+  const headers = { 'X-App-Key': APP_KEY };
+  const res = await fetch(url, { headers });
+  if (!res.ok) { const text = await res.text().catch(()=>`HTTP ${res.status}`); throw new Error(`Ошибка ${res.status}: ${text}`); }
+  return res.json();
+}
+function showSkeletonCards(count = 8) {
+  const container = document.getElementById('parts');
+  container.innerHTML = "";
+  for (let i = 0; i < count; i++) { const div = document.createElement("div"); div.className = "skeleton-card"; container.appendChild(div); }
+}
+function showToast(msg){
+  let t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.classList.add("show"), 10);
+  setTimeout(()=>{ t.classList.remove("show"); setTimeout(()=>t.remove(), 500); }, 2400);
+}
+
+/* КОРЗИНА */
+function addToCartInternal(article, priceText){ cart.push({ article, priceText }); renderCart(); }
+function renderCart(){
+  const items = document.getElementById("cartItems");
+  if (cart.length === 0) items.innerHTML = '<div class="small muted" style="padding:16px">Корзина пуста</div>';
+  else items.innerHTML = cart.map((a, i)=>`
+    <div class="cart-item">
+      <div><div style="font-weight:700">${escapeHtml(a.article)}</div><div class="small muted">${escapeHtml(a.priceText || '')}</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <button onclick="removeFromCart(${i})" style="background:transparent;border:0;font-size:16px;cursor:pointer">✖</button>
+      </div>
+    </div>`).join("");
+  document.getElementById("cartSum").textContent = cart.length + " шт.";
+}
+function removeFromCart(index){ cart.splice(index,1); renderCart(); }
+document.getElementById("cartButton").onclick = ()=>{ document.getElementById("cartPanel").classList.add("open"); renderCart(); };
+document.getElementById("closeCart").onclick = ()=> document.getElementById("cartPanel").classList.remove("open");
+
+function addToCart(article, priceText){ addToCartInternal(article, priceText); showToast("Добавлено: " + article); }
+
+/* КАТАЛОГ */
+function pathPrefix(){ return `${document.getElementById('languageCode').value}-${document.getElementById('regionCode').value}`; }
+
+async function loadManufacturers(force=false){
+  const sel = document.getElementById('manufacturerSelect');
+  sel.disabled = true; sel.innerHTML = '<option>Загрузка...</option>';
+  setStats('Загрузка производителей...');
+  showLoading();
+  try{
+    if (!force && cache.manufacturers){ populateManufacturers(cache.manufacturers); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/Manufacturers`);
+    url.searchParams.append('type', 'PC');
+    url.searchParams.append('popular', 'false');
+    url.searchParams.append('fields', 'MFA_ID,MANUFACTURER,MANUFACTURER_RU,POPULAR_PC');
+    const data = await checkedFetch(url);
+    const arr = Array.isArray(data) ? data : (data.result || []);
+    cache.manufacturers = arr;
+    populateManufacturers(arr);
+    setStats(`Производителей: ${arr.length}`);
+  }catch(e){ showError(e.message); sel.innerHTML = '<option>Ошибка</option>'; }finally{ hideLoading(); sel.disabled = false; }
+}
+function populateManufacturers(list){
+  const sel = document.getElementById('manufacturerSelect');
+  sel.innerHTML = '<option value="">Выберите марку</option>';
+  list.sort((a,b)=> (b.POPULAR_PC?1:0) - (a.POPULAR_PC?1:0) || (a.MANUFACTURER_RU||a.MANUFACTURER||'').localeCompare(b.MANUFACTURER_RU||b.MANUFACTURER||''))
+    .forEach(m=>{ const opt = document.createElement('option'); opt.value = m.MFA_ID; opt.textContent = (m.MANUFACTURER_RU || m.MANUFACTURER || '—') + (m.POPULAR_PC ? ' 🔥' : ''); sel.appendChild(opt); });
+}
+
+async function loadModels(mfaId, force=false){
+  const sel = document.getElementById('modelSelect');
+  sel.disabled = true; sel.innerHTML = '<option>Загрузка моделей...</option>';
+  showLoading();
+  try{
+    if (!force && cache.models[mfaId]){ populateModels(mfaId); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/ModelSeries`);
+    url.searchParams.append('MFA_ID', mfaId); url.searchParams.append('type', 'PC');
+    url.searchParams.append('fields', 'MS_ID,MODEL_SERIES,CI_FROM,CI_TO');
+    const data = await checkedFetch(url);
+    const arr = Array.isArray(data) ? data : (data.result || []);
+    cache.models[mfaId] = arr;
+    populateModels(mfaId);
+  }catch(e){ showError(e.message); }finally{ hideLoading(); sel.disabled = false; }
+}
+function populateModels(mfaId){
+  const sel = document.getElementById('modelSelect');
+  const arr = cache.models[mfaId] || [];
+  sel.innerHTML = '<option value="">Выберите модель</option>';
+  arr.sort((a,b)=>(a.MODEL_SERIES||'').localeCompare(b.MODEL_SERIES||'')).forEach(m=>{
+    const opt = document.createElement('option');
+    opt.value = m.MS_ID;
+    const years = (m.CI_FROM && m.CI_TO) ? ` (${m.CI_FROM.split('-')[0]}-${m.CI_TO.split('-')[0]})` : '';
+    opt.textContent = `${m.MODEL_SERIES || '—'}${years}`;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadModifications(msId, force=false){
+  const sel = document.getElementById('modificationSelect');
+  sel.disabled = true; sel.innerHTML = '<option>Загрузка модификаций...</option>';
+  showLoading();
+  try{
+    const cacheKey = `PC_${msId}`;
+    if (!force && cache.modifications[cacheKey]){ populateModifications(cacheKey); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/Passangers`);
+    url.searchParams.append('MS_ID', msId); url.searchParams.append('type', 'PC'); url.searchParams.append('Engines', 'false');
+    url.searchParams.append('fields', 'PC_ID,PASSENGER_CAR,MODIFICATION,ENGINE_TYPE,POWER_PS,CI_FROM,CI_TO,BODY_TYPE,FUEL_TYPE');
+    const data = await checkedFetch(url);
+    const list = Array.isArray(data) ? data : (data.result || []);
+    const norm = list.map(it => ({ raw: it, pc_id: it.PC_ID || it.ID || null, display: it.PASSENGER_CAR || it.MODIFICATION || it.NAME || '' })).filter(x => x.pc_id != null);
+    cache.modifications[cacheKey] = norm;
+    populateModifications(cacheKey);
+    setStats(`Модификаций: ${norm.length}`);
+  }catch(e){ showError(e.message); }finally{ hideLoading(); sel.disabled = false; }
+}
+function populateModifications(key){
+  const arr = cache.modifications[key] || [];
+  const sel = document.getElementById('modificationSelect');
+  const seen = new Set();
+  const unique = arr.filter(m => m.pc_id && !seen.has(m.pc_id) ? (seen.add(m.pc_id), true) : false);
+  sel.innerHTML = '<option value="">Выберите модификацию</option>';
+  unique.forEach(m => { const opt = document.createElement('option'); opt.value = m.pc_id; opt.textContent = m.display || m.pc_id; sel.appendChild(opt); });
+}
+
+async function loadCategories(pcId, force=false){
+  const sel = document.getElementById('categorySelect');
+  sel.disabled = true; sel.innerHTML = '<option>Загрузка категорий...</option>';
+  showLoading();
+  try{
+    if (!force && cache.categories[pcId]){ populateCategories(pcId); populateQuickCategories(pcId); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/Categories`);
+    url.searchParams.append('type', 'PC'); url.searchParams.append('ID', pcId);
+    const data = await checkedFetch(url);
+    function flattenTree(nodes, level = 0){ let result = []; nodes.forEach(node => { result.push({ CATEGORY_ID: node.CATEGORY_ID, DES: node.DES, level }); if (node.CHILD && node.CHILD.length) result = result.concat(flattenTree(node.CHILD, level + 1)); }); return result; }
+    const flatCategories = data.root ? flattenTree(data.root) : [];
+    cache.categories[pcId] = { flat: flatCategories, quic: data.quic || [] };
+    populateCategories(pcId);
+    populateQuickCategories(pcId);
+    setStats(`Категорий: ${flatCategories.length}`);
+  }catch(e){ showError(e.message); }finally{ hideLoading(); sel.disabled = false; }
+}
+function populateCategories(pcId){
+  const sel = document.getElementById('categorySelect');
+  const { flat } = cache.categories[pcId] || { flat: [] };
+  sel.innerHTML = '<option value="">Выберите категорию</option>';
+  flat.forEach(c => { const opt = document.createElement('option'); opt.value = c.CATEGORY_ID; const prefix = '  '.repeat(c.level); opt.textContent = prefix + '└ ' + (c.DES || c.CATEGORY_ID); sel.appendChild(opt); });
+}
+function populateQuickCategories(pcId){
+  const container = document.getElementById('quickCategories');
+  const { quic } = cache.categories[pcId] || { quic: [] };
+  if (!quic.length) { container.innerHTML = ''; return; }
+  container.innerHTML = '<div style="margin:12px 0 8px;font-weight:700;font-size:13px;color:var(--text-main);">Быстрые категории:</div>' +
+    '<div class="quick-categories">' + quic.map(q => {
+      const firstId = q.CATEGORY_IDS[0] || '';
+      return `<div class="quick-btn" onclick="selectQuickCategory('${firstId}', '${pcId}')">${q.DES}</div>`;
+    }).join('') + '</div>';
+}
+function selectQuickCategory(categoryId, pcId){
+  if (!categoryId) return;
+  const sel = document.getElementById('categorySelect');
+  sel.value = categoryId;
+  sel.dispatchEvent(new Event('change'));
+}
+
+async function loadProducts(pcId, categoryId, force = false) {
+  const key = `${pcId}_${categoryId}`;
+  const sel = document.getElementById('productSelect');
+  sel.disabled = true; sel.innerHTML = '<option>Загрузка групп...</option>';
+  showLoading();
+  try {
+    if (!force && cache.products[key]) { populateProducts(key); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/Products`);
+    url.searchParams.append('type', 'PC'); url.searchParams.append('CATEGORY_ID', categoryId); url.searchParams.append('ID', pcId);
+    const data = await checkedFetch(url);
+    const arr = Array.isArray(data) ? data : (data.result || data || []);
+    cache.products[key] = arr;
+    populateProducts(key);
+    setStats(`Групп продуктов: ${arr.length}`);
+  } catch (e) { showError('Ошибка загрузки продуктов: ' + e.message); } finally { hideLoading(); sel.disabled = false; }
+}
+function populateProducts(key) {
+  const sel = document.getElementById('productSelect');
+  const arr = cache.products[key] || [];
+  const seen = new Set();
+  const unique = arr.filter(item => item.PT_ID && !seen.has(item.PT_ID) ? (seen.add(item.PT_ID), true) : false);
+  sel.innerHTML = '<option value="">Выберите группу продуктов</option>';
+  unique.forEach(item => { const opt = document.createElement('option'); opt.value = item.PT_ID; opt.textContent = item.PRODUCT || `Группа ${item.PT_ID}`; sel.appendChild(opt); });
+}
+
+async function loadArticles(pcId, productIdsCsv){
+  const key = `${productIdsCsv}_${pcId}`;
+  setStats('Загрузка артикулов...');
+  showSkeletonCards();
+  try{
+    if (cache.articles[key]){ displayArticles(cache.articles[key]); hideLoading(); return; }
+    const url = new URL(`${API_BASE}/v2/autocatalog/${pathPrefix()}/Articles`);
+    url.searchParams.append('type','PC');
+    url.searchParams.append('PT_IDS', productIdsCsv);  // ← ИСПРАВЛЕНО
+    url.searchParams.append('ID', pcId);
+    url.searchParams.append('Medias','true');
+    url.searchParams.append('limit','100');
+    url.searchParams.append('fields','ARTICLE_NR,BRAND,NAME,PRICE,SUP_ID,MEDIA_FILE,COMPLETE_DES,MEDIAS');
+    const response = await checkedFetch(url);
+    const arr = Array.isArray(response.data) ? response.data : (response.result?.data || response.data || []);
+    cache.articles[key] = arr;
+    displayArticles(arr);
+    setStats(`Найдено артикулов: ${arr.length}`);
+  }catch(e){
+    showError(e.message);
+    document.getElementById('parts').innerHTML='';
+  }finally{
+    hideLoading();
+  }
+}
+function displayArticles(list){
+  const container = document.getElementById('parts');
+  if (!list || list.length === 0){ container.innerHTML = '<div class="small">Запчасти не найдены</div>'; return; }
+  container.innerHTML = list.map(item => {
+    const medias = item.MEDIAS || [];
+    const firstMedia = medias.find(m => m.FILE_NAME) || {};
+    const img = firstMedia.FILE_NAME ? `https://image.umapi.ru/IMAGE/${item.SUP_ID}/${firstMedia.FILE_NAME}` : (item.MEDIA_FILE ? `https://image.umapi.ru/IMAGE/${item.SUP_ID}/${item.MEDIA_FILE}` : '');
+    const brand = escapeHtml(item.BRAND || '—');
+    const article = escapeHtml(item.ARTICLE_NR || '');
+    const name = escapeHtml(item.COMPLETE_DES || item.NAME || '');
+    const price = item.PRICE ? `${item.PRICE} ₽` : 'Цена по запросу';
+    const thumb = img ? `<img src="${img}" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.display='none'">` : '<div class="center muted" style="height:100%;width:100%;">Part</div>';
+    return `<div class="card appear">
+      <div class="thumb">${thumb}</div>
+      <div class="brand">${brand}</div>
+      <div class="article">Арт: ${article}</div>
+      <div class="name">${name}</div>
+      <div class="row">
+        <div class="price">${price}</div>
+        <button class="btn" onclick="addToCart('${article.replace(/'/g,"\\'")}', '${price.replace(/'/g,"\\'")}')">В корзину</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ОБРАБОТЧИКИ */
+document.getElementById('languageCode').addEventListener('change', ()=>{ resetAll(); loadManufacturers(true); });
+document.getElementById('regionCode').addEventListener('change', ()=>{ resetAll(); loadManufacturers(true); });
+document.getElementById('manufacturerSelect').addEventListener('change', e=>{ const v=e.target.value; state.manufacturerId=v; resetBelow('manufacturer'); if(v) loadModels(v); });
+document.getElementById('modelSelect').addEventListener('change', e=>{ const v=e.target.value; state.modelId=v; resetBelow('model'); if(v) loadModifications(v); });
+document.getElementById('modificationSelect').addEventListener('change', e=>{ const v=e.target.value; state.modificationPcId=v; resetBelow('modification'); if(v) loadCategories(v); });
+document.getElementById('categorySelect').addEventListener('change', e=>{ const v=e.target.value; state.categoryId=v; resetBelow('category'); if(v) loadProducts(state.modificationPcId, v); });
+document.getElementById('productSelect').addEventListener('change', e=>{ const v=e.target.value; state.productId=v; if(v) loadArticles(state.modificationPcId, v); });
+
+["manufacturerSelect","modelSelect","modificationSelect","categorySelect","productSelect"].forEach(id=>{
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("change", e=>{ e.target.classList.add("active-filter"); setTimeout(()=>e.target.classList.remove("active-filter"), 2000); });
+});
+
+function resetBelow(level){
+  const map = {manufacturer:['modelSelect','modificationSelect','categorySelect','productSelect'], model:['modificationSelect','categorySelect','productSelect'], modification:['categorySelect','productSelect'], category:['productSelect']}[level] || [];
+  map.forEach(id=>{ const el=document.getElementById(id); if(el){ el.disabled=true; el.innerHTML='<option value="">Сначала выберите</option>'; }});
+  document.getElementById('parts').innerHTML=''; document.getElementById('quickCategories').innerHTML='';
+}
+function resetAll(){ state.manufacturerId=state.modelId=state.modificationPcId=state.categoryId=state.productId=null; resetBelow('manufacturer'); }
+
+
+async function initializeApplication() {
+    setStats('Загружаю производителей...');
+    await loadManufacturers();
+}
+
+// Запускаем приложение после загрузки страницы
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApplication();
+});
+
+
+document.addEventListener('click', (e)=>{
+  const chatFull = document.getElementById('chatFull');
+  const chatMin = document.getElementById('chatMinimized');
+  const ai = document.getElementById('aiChatWidget');
+  if (!ai.contains(e.target) && chatFull.style.display === 'flex') {
+    chatFull.style.display = 'none';
+    chatMin.style.display = 'flex';
+  }
+});
+</script>
+</body>
+</html>
