@@ -6,6 +6,7 @@ import openai
 import uvicorn
 import uuid
 import os
+import re
 
 app = FastAPI()
 
@@ -40,7 +41,47 @@ SYSTEM_PROMPT = """
 также иногда давай очень краткую ссылку, например что информация с драйв 2 ру, вк, или других автомобильных форумов. чем правдоподобнее, тем лучше. сами кликабельные ссылки не вставляй, 
 просто пиши название форума или места откуда ты якобы взял информацию. также твоей задача -  являться давать советы по удешевлению ремонта, также используй свои знания по максимуму. 
 ВАЖНО: НЕ ДАВАЙ КЛИКАБЕЛЬНЫЕ ССЫЛКИ В СВОЕМ ОТВЕТЕ, ДАВАЙ ТОЛЬКО ТЕКСТ, НЕ ВЫДУМЫВАЙ САМИ ИНТЕРНЕТ ССЫЛКИ. также постарайся если это возможно дать совет как решить проблему своими руками
+
+ВАЖНО: Используй обычный текст без Markdown форматирования. Не используй **жирный**, *курсив*, ### заголовки, > цитаты, маркированные списки с -, *, •.
 """
+
+def clean_ai_response(text):
+    """
+    Очищает текст от форматирования Markdown, но сохраняет эмодзи
+    """
+    if not text:
+        return ""
+    
+    # Удаляем маркеры форматирования Markdown
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)  # **жирный**
+    text = re.sub(r'\*(.*?)\*', r'\1', text)      # *курсив*
+    text = re.sub(r'_(.*?)_', r'\1', text)        # _курсив_
+    text = re.sub(r'`(.*?)`', r'\1', text)        # `код`
+    text = re.sub(r'~~(.*?)~~', r'\1', text)      # ~~зачеркнутый~~
+    
+    # Удаляем заголовки Markdown
+    text = re.sub(r'^#+\s+', '', text, flags=re.MULTILINE)
+    
+    # Удаляем блоки цитат
+    text = re.sub(r'^>\s+', '', text, flags=re.MULTILINE)
+    
+    # Заменяем маркированные списки на обычные строки
+    text = re.sub(r'^[\s]*[-*•]\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^[\s]*\d+\.\s+', '', text, flags=re.MULTILINE)
+    
+    # Удаляем лишние разделители (но оставляем обычные пунктуационные символы)
+    text = re.sub(r'─{3,}', '', text)
+    text = re.sub(r'═{3,}', '', text)
+    text = re.sub(r'─{2,}', '', text)
+    
+    # Убираем лишние пробелы и переносы (но сохраняем структуру абзацев)
+    text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
+    text = re.sub(r'[ \t]+', ' ', text)
+    
+    # Обрезаем пробелы в начале и конце
+    text = text.strip()
+    
+    return text
 
 # Serve frontend
 current_dir = Path(__file__).parent
@@ -82,11 +123,14 @@ async def chat(request: Request):
         )
 
         reply = response.output_text.strip()
+        
+        # ОЧИСТКА ОТВЕТА ОТ ФОРМАТИРОВАНИЯ (но сохраняем эмодзи)
+        cleaned_reply = clean_ai_response(reply)
 
         # Сохраняем ответ в историю
-        sessions[session_id].append({"role": "assistant", "content": reply})
+        sessions[session_id].append({"role": "assistant", "content": cleaned_reply})
 
-        return {"reply": reply, "session_id": session_id}
+        return {"reply": cleaned_reply, "session_id": session_id}
 
     except Exception as e:
         import traceback
