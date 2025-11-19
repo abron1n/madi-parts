@@ -449,7 +449,15 @@ function renderCart(){
   document.getElementById("cartSum").textContent = cart.length + " шт.";
 }
 function removeFromCart(index){ cart.splice(index,1); renderCart(); }
-document.getElementById("cartButton").onclick = ()=>{ document.getElementById("cartPanel").classList.add("open"); renderCart(); };
+document.getElementById("cartButton").onclick = ()=>{ 
+  const cartPanel = document.getElementById("cartPanel");
+  if (cartPanel.classList.contains("open")) {
+    cartPanel.classList.remove("open");
+  } else {
+    cartPanel.classList.add("open"); 
+    renderCart(); 
+  }
+};
 document.getElementById("closeCart").onclick = ()=> document.getElementById("cartPanel").classList.remove("open");
 
 function addToCart(article, priceText){ addToCartInternal(article, priceText); showToast("Добавлено: " + article); }
@@ -698,3 +706,4 @@ document.addEventListener('click', (e)=>{
 </body>
 
 </html>
+
