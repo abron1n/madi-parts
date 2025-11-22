@@ -20,7 +20,7 @@ app.add_middleware(
 
 # === ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ===
 FOLDER_ID = os.getenv("FOLDER_ID")
-API_KEY = os.getenv("API_KEY") 
+API_KEY = os.getenv("API_KEY")
 MODEL = os.getenv("MODEL", "qwen3-235b-a22b-fp8/latest")
 
 # Проверка обязательных переменных
@@ -44,39 +44,23 @@ SYSTEM_PROMPT = """
 """
 
 def clean_ai_response(text):
-    """
-    Очищает текст от форматирования Markdown, но сохраняет эмодзи
-    """
     if not text:
         return ""
     
-    # Удаляем маркеры форматирования Markdown
-    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)  # **жирный**
-    text = re.sub(r'\*(.*?)\*', r'\1', text)      # *курсив*
-    text = re.sub(r'_(.*?)_', r'\1', text)        # _курсив_
-    text = re.sub(r'`(.*?)`', r'\1', text)        # `код`
-    text = re.sub(r'~~(.*?)~~', r'\1', text)      # ~~зачеркнутый~~
-    
-    # Удаляем заголовки Markdown
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.*?)\*', r'\1', text)
+    text = re.sub(r'_(.*?)_', r'\1', text)
+    text = re.sub(r'`(.*?)`', r'\1', text)
+    text = re.sub(r'~~(.*?)~~', r'\1', text)
     text = re.sub(r'^#+\s+', '', text, flags=re.MULTILINE)
-    
-    # Удаляем блоки цитат
     text = re.sub(r'^>\s+', '', text, flags=re.MULTILINE)
-    
-    # Заменяем маркированные списки на обычные строки
     text = re.sub(r'^[\s]*[-*•]\s+', '', text, flags=re.MULTILINE)
     text = re.sub(r'^[\s]*\d+\.\s+', '', text, flags=re.MULTILINE)
-    
-    # Удаляем лишние разделители (но оставляем обычные пунктуационные символы)
     text = re.sub(r'─{3,}', '', text)
     text = re.sub(r'═{3,}', '', text)
     text = re.sub(r'─{2,}', '', text)
-    
-    # Убираем лишние пробелы и переносы (но сохраняем структуру абзацев)
     text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
     text = re.sub(r'[ \t]+', ' ', text)
-    
-    # Обрезаем пробелы в начале и конце
     text = text.strip()
     
     return text
@@ -88,12 +72,11 @@ current_dir = Path(__file__).parent
 async def serve_frontend():
     return FileResponse(current_dir / "MADIPARTS.html")
 
-# Health check
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "model": MODEL}
 
-# Chat endpoint
+# Chat endpoint — ИСПРАВЛЕННАЯ ВЕРСИЯ С СОХРАНЕНИЕМ КОНТЕКСТА
 @app.post("/chat")
 async def chat(request: Request):
     try:
@@ -111,21 +94,27 @@ async def chat(request: Request):
         # Добавляем сообщение пользователя
         sessions[session_id].append({"role": "user", "content": message})
 
-        # ПРАВИЛЬНЫЙ ВЫЗОВ ДЛЯ YANDEX CLOUD - ВОЗВРАЩАЕМ ОРИГИНАЛЬНЫЙ ФОРМАТ
+        # Формируем историю диалога БЕЗ системного промпта (он передаётся в instructions)
+        conversation_history = sessions[session_id][1:]
+
+        # ОПЦИОНАЛЬНО: ограничение длины истории (чтобы не превысить лимит токенов)
+        MAX_HISTORY_PAIRS = 15  # примерно 30 сообщений (15 от пользователя + 15 от ассистента)
+        if len(conversation_history) > MAX_HISTORY_PAIRS * 2:
+            conversation_history = conversation_history[-MAX_HISTORY_PAIRS * 2:]
+
+        # Отправляем всю историю
         response = client.responses.create(
             model=f"gpt://{FOLDER_ID}/{MODEL}",
             temperature=0.6,
             max_output_tokens=2500,
             instructions=SYSTEM_PROMPT,
-            input=[{"role": "user", "content": message}]
+            input=conversation_history  # ← теперь передаётся весь контекст
         )
 
         reply = response.output_text.strip()
-        
-        # ОЧИСТКА ОТВЕТА ОТ ФОРМАТИРОВАНИЯ (но сохраняем эмодзи)
         cleaned_reply = clean_ai_response(reply)
 
-        # Сохраняем ответ в историю
+        # Сохраняем ответ в сессию
         sessions[session_id].append({"role": "assistant", "content": cleaned_reply})
 
         return {"reply": cleaned_reply, "session_id": session_id}
@@ -143,4 +132,3 @@ async def chat(request: Request):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
-
