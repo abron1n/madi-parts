@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -132,23 +133,26 @@
 
   footer{padding:12px 0 0;color:var(--text-muted);font-size:13px}
 
-  #aiChatWidget{position:fixed;bottom:22px;right:22px;z-index:9999;}
+  /* ========== АДАПТИВНЫЙ ЧАТ И КОРЗИНА ========== */
+  #aiChatWidget{position:fixed;bottom:20px;right:20px;z-index:9999;}
   #chatMinimized{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:14px 20px;border-radius:50px;cursor:pointer;box-shadow:0 14px 40px rgba(47,128,237,0.26);font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px;transition:all .3s;}
   #chatMinimized:hover{transform:scale(1.06)}
-  #chatFull{width:420px;height:620px;background:rgba(255,255,255,0.18);border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,0.3);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.28);backdrop-filter:blur(30px) saturate(180%);}
-  #chatFull .chatHeader{padding:16px 18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:15px;}
+  #chatFull{position:fixed;bottom:80px;right:20px;width:380px;max-width:calc(100vw - 40px);height:580px;max-height:calc(100vh - 140px);background:rgba(255,255,255,0.18);border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,0.3);overflow:hidden;display:none;flex-direction:column;border:1px solid rgba(255,255,255,0.28);backdrop-filter:blur(30px) saturate(180%);}
+  #chatFull.open{display:flex;}
+  #chatFull .chatHeader{padding:16px 18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:15px;flex-shrink:0;}
   #chatMessages{flex:1;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
   #chatMessages .bot{align-self:flex-start;background:rgba(255,255,255,0.40);backdrop-filter:blur(14px);color:var(--text-main);padding:12px 14px;border-radius:16px;max-width:80%;border:1px solid rgba(255,255,255,0.35);box-shadow:0 6px 18px rgba(6,18,37,0.06);}
   #chatMessages .user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:12px 14px;border-radius:16px;max-width:80%;box-shadow:0 6px 18px rgba(6,18,37,0.12);}
-  #chatFull .inputWrap{padding:14px;display:flex;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));}
+  #chatFull .inputWrap{padding:14px;display:flex;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));flex-shrink:0;}
   #chatInput{flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);outline:none;background:rgba(255,255,255,0.04);color:var(--text-main);}
   #chatSendBtn{padding:10px 16px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;font-weight:800;cursor:pointer;}
 
-  #cartButton{position:fixed;bottom:92px;right:22px;z-index:99999;background:linear-gradient(120deg,var(--accent),var(--accent-2));width:56px;height:56px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;cursor:pointer;box-shadow:0 14px 36px rgba(47,128,237,0.3);transition:all .28s;}
+  #cartButton{position:fixed;bottom:88px;right:20px;z-index:99999;background:linear-gradient(120deg,var(--accent),var(--accent-2));width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;cursor:pointer;box-shadow:0 14px 36px rgba(47,128,237,0.3);transition:all .28s;}
   #cartButton:hover{transform:scale(1.06);}
-  #cartPanel{position:fixed;top:0;right:-420px;width:420px;height:100%;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border-left:1px solid rgba(255,255,255,0.25);box-shadow:-10px 0 40px rgba(0,0,0,0.25);transition:right .45s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;z-index:99998;}
-  #cartPanel.open{right:0;}
-  .cart-header{padding:20px;font-size:18px;font-weight:800;display:flex;justify-content:space-between;}
+  #cartButton.hidden { display: none !important; }
+  #cartPanel{position:fixed;top:0;right:0;width:420px;max-width:100vw;height:100vh;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border-left:1px solid rgba(255,255,255,0.25);box-shadow:-10px 0 40px rgba(0,0,0,0.25);transition:transform .45s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;z-index:99998;transform:translateX(100%);}
+  #cartPanel.open{transform:translateX(0);}
+  .cart-header{padding:20px;font-size:18px;font-weight:800;display:flex;justify-content:space-between;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);}
   .cart-header button{background:none;border:0;font-size:28px;cursor:pointer;color:var(--text-main);}
   #cartItems{flex:1;overflow-y:auto;padding:16px;}
   .cart-item{display:flex;justify-content:space-between;margin-bottom:12px;padding:12px;background:rgba(255,255,255,0.24);border-radius:14px;backdrop-filter:blur(16px);}
@@ -159,8 +163,10 @@
 
   @media (max-width:980px){
     .main{grid-template-columns:1fr}.panel{order:2}.results{order:1}
-    #chatFull,#cartPanel{width:calc(100%-24px);left:12px;right:auto;height:540px}
-    #cartButton{bottom:92px;right:12px}
+    #chatFull{width:calc(100vw - 40px);height:calc(100vh - 120px);right:20px;bottom:80px;}
+    #cartPanel{width:100vw;height:auto;min-height:60vh;max-height:90vh;top:auto;bottom:0;border-radius:20px 20px 0 0;border-left:none;transform:translateY(100%);}
+    #cartPanel.open{transform:translateY(0);}
+    #cartButton{bottom:88px;right:20px;}
   }
   .muted{color:var(--text-muted)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -244,6 +250,44 @@ select option:nth-child(n+11) { animation-delay: 0.30s; }
 select:focus {
   box-shadow: 0 0 0 4px rgba(227, 25, 55, 0.25);   /* Красный Tesla-акцент */
 }
+
+/* Плавное появление кнопки ИИ-Экспперта */
+#chatMinimized {
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color: white;
+  padding: 14px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 14px 40px rgba(47,128,237,0.26);
+  font-weight: 800;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all .3s;
+
+  /* ← ЭТИ ДВЕ СТРОКИ — ДЛЯ ПЛАВНОГО ПОЯВЛЕНИЯ ПРИ ЗАГРУЗКЕ */
+  animation: slideUp 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;
+  transform: translateY(120%);
+  opacity: 0;
+}
+
+#chatMinimized:hover { transform: scale(1.06) translateY(0); }
+
+/* Анимация выезда снизу */
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* При открытом чате — кнопка скрыта сразу без анимации */
+#chatFull.open ~ #chatMinimized,
+#chatMinimized[style*="none"] {
+  animation: none !important;
+}
+
 </style>
 </head>
 <body>
@@ -287,15 +331,15 @@ select:focus {
   </div>
 </div>
 
-<!-- Чат с ИИ -->
+<!-- Чат с ИИ (исправленный) -->
 <div id="aiChatWidget">
-  <div id="chatMinimized" title="Открыть чат">ИИ-Эксперт</div>
-  <div id="chatFull" style="display:none;">
+  <div id="chatMinimized" onclick="openChat()">ИИ-Эксперт</div>
+  <div id="chatFull">
     <div class="chatHeader">
       <span>powered by Qwen</span>
       <div style="display:flex;gap:10px;align-items:center">
-        <button onclick="document.getElementById('chatFull').style.display='none';document.getElementById('chatMinimized').style.display='flex'" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">−</button>
-        <button onclick="document.getElementById('aiChatWidget').style.display='none'" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">×</button>
+        <button onclick="closeChat()" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">−</button>
+        <button onclick="closeChat()" style="background:transparent;border:0;color:white;font-size:18px;cursor:pointer">×</button>
       </div>
     </div>
     <div id="chatMessages"></div>
@@ -306,12 +350,12 @@ select:focus {
   </div>
 </div>
 
-<!-- Корзина над чатом -->
-<div id="cartButton" title="Открыть корзину">🛒</div>
-<div id="cartPanel" aria-hidden="true">
+<!-- Корзина (исправленная) -->
+<div id="cartButton" onclick="openCart()">🛒</div>
+<div id="cartPanel">
   <div class="cart-header">
     <span>Корзина</span>
-    <button id="closeCart">×</button>
+    <button id="closeCart" onclick="closeCart()">x</button>
   </div>
   <div id="cartItems"></div>
   <div class="cart-footer">
@@ -360,15 +404,20 @@ let cart = [];
   };
 })();
 
-/* ЧАТ */
-function toggleChat() {
-  document.getElementById('chatFull').style.display = 'flex';
+/* ЧАТ — ИСПРАВЛЕННЫЙ */
+function openChat() {
+  document.getElementById('chatFull').classList.add('open');
   document.getElementById('chatMinimized').style.display = 'none';
+  document.getElementById('cartButton').classList.add('hidden');
   if (document.getElementById('chatMessages').children.length === 0) {
     addMessage("Привет! Я — эксперт по ремонту и техническому обслуживанию автомобилей. Пиши любой вопрос!", "bot");
   }
 }
-document.getElementById('chatMinimized').onclick = toggleChat;
+function closeChat() {
+  document.getElementById('chatFull').classList.remove('open');
+  document.getElementById('chatMinimized').style.display = 'flex';
+  document.getElementById('cartButton').classList.remove('hidden');
+}
 
 function addMessage(text, sender) {
   const div = document.createElement('div');
@@ -407,6 +456,14 @@ async function sendMessage() {
   }
 }
 
+/* Закрытие чата кликом вне */
+document.addEventListener('click', (e) => {
+  const widget = document.getElementById('aiChatWidget');
+  if (!widget.contains(e.target) && document.getElementById('chatFull').classList.contains('open')) {
+    closeChat();
+  }
+});
+
 /* УТИЛИТЫ */
 function showError(msg){ document.getElementById('errorBox').innerHTML = `<div class="error">${escapeHtml(msg)}</div>`; }
 function clearError(){ document.getElementById('errorBox').innerHTML = ''; }
@@ -434,7 +491,31 @@ function showToast(msg){
   setTimeout(()=>{ t.classList.remove("show"); setTimeout(()=>t.remove(), 500); }, 2400);
 }
 
-/* КОРЗИНА */
+/* КОРЗИНА — ИСПРАВЛЕННАЯ */
+
+/* КОРЗИНА — С ИСЧЕЗАЮЩЕЙ КНОПКОЙ */
+function openCart() {
+  document.getElementById("cartPanel").classList.add("open");
+  document.getElementById("cartButton").classList.add("hidden");
+  renderCart();
+}
+
+function closeCart() {
+  document.getElementById("cartPanel").classList.remove("open");
+  document.getElementById("cartButton").classList.remove("hidden");
+}
+
+/* Закрытие кликом вне панели (на мобильных) */
+document.addEventListener("click", function(e) {
+  const panel = document.getElementById("cartPanel");
+  const button = document.getElementById("cartButton");
+  if (panel.classList.contains("open") && 
+      !panel.contains(e.target) && 
+      !button.contains(e.target)) {
+    closeCart();
+  }
+});
+
 function addToCartInternal(article, priceText){ cart.push({ article, priceText }); renderCart(); }
 function renderCart(){
   const items = document.getElementById("cartItems");
@@ -449,16 +530,6 @@ function renderCart(){
   document.getElementById("cartSum").textContent = cart.length + " шт.";
 }
 function removeFromCart(index){ cart.splice(index,1); renderCart(); }
-document.getElementById("cartButton").onclick = ()=>{ 
-  const cartPanel = document.getElementById("cartPanel");
-  if (cartPanel.classList.contains("open")) {
-    cartPanel.classList.remove("open");
-  } else {
-    cartPanel.classList.add("open"); 
-    renderCart(); 
-  }
-};
-document.getElementById("closeCart").onclick = ()=> document.getElementById("cartPanel").classList.remove("open");
 
 function addToCart(article, priceText){ addToCartInternal(article, priceText); showToast("Добавлено: " + article); }
 
@@ -690,17 +761,6 @@ async function initializeApplication() {
 // Запускаем приложение после загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
     initializeApplication();
-});
-
-
-document.addEventListener('click', (e)=>{
-  const chatFull = document.getElementById('chatFull');
-  const chatMin = document.getElementById('chatMinimized');
-  const ai = document.getElementById('aiChatWidget');
-  if (!ai.contains(e.target) && chatFull.style.display === 'flex') {
-    chatFull.style.display = 'none';
-    chatMin.style.display = 'flex';
-  }
 });
 </script>
 </body>
